@@ -61,18 +61,69 @@ public class Tests
         var list = new CustomList<int>(collection);
         for (int i = 0; i < list.Count; i++)
         {
-            Assert.IsTrue(list[i] == collection[i]);
+            Assert.AreEqual(list[i], collection[i]);
         }
     }
-    
+
     [Test]
     public void CanSetListItemByIndex()
     {
         int[] collection = [1, 2, 3, 5];
         var list = new CustomList<int>(collection);
         int value = 99;
-        int expectedIndex = 1;
-        list[expectedIndex - 1] = value;
-        Assert.IsTrue(list[expectedIndex - 1] == value);
+        list[list.Count - 1] = value;
+        Assert.IsTrue(list[list.Count - 1] == value);
+    }
+
+    [Test]
+    public void ArgumentOutOfRangeExceptionIfIndexLessThanZero()
+    {
+        var list = new CustomList<int>();
+        Assert.Throws<IndexOutOfRangeException>(() => list[-1] = 1);
+    }
+
+    [Test]
+    public void ArgumentOutOfRangeExceptionIfIndexGreaterOrEqualCount()
+    {
+        int[] collection = [1, 2, 3, 5];
+        var list = new CustomList<int>(collection);
+        Assert.Throws<IndexOutOfRangeException>(() => list[list.Count] = 9);
+    }
+
+    [Test]
+    public void CountIncreasedAfterItemAdded()
+    {
+        int size = 10;
+        var list = new CustomList<int>();
+        for (int i = 0; i < size; i++)
+        {
+            list.Add(i);
+        }
+
+        Assert.AreEqual(size, list.Count);
+    }
+
+    [Test]
+    public void ItemExistAfterItemAdded()
+    {
+        int size = 10;
+        var list = new CustomList<int>();
+        for (int i = 0; i < size; i++)
+        {
+            list.Add(i);
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            Assert.IsTrue(list[i] == i);
+        }
+    }
+
+    [Test]
+    public void CapacityMustBeGraterThatCount()
+    {
+        int[] collection = [1, 2, 3, 5];
+        var list = new CustomList<int>(collection);
+        Assert.Throws<ArgumentOutOfRangeException>(() => list.Capacity = list.Count - 1);
     }
 }
